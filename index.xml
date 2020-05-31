@@ -10,5 +10,15 @@
 	<atom:link href="https://www.onebucketsambaar.com/index.xml" rel="self" type="application/rss+xml" />
     
     
+    <item>
+      <title>About Me</title>
+      <link>https://www.onebucketsambaar.com/about/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://www.onebucketsambaar.com/about/</guid>
+      <description>What I do I&amp;rsquo;m a full stack software engineer in the native advertising space with close to a decade of experience writing software. I mostly code in Scala, JavaScript/TypeScript and Java. I have worked in other languages. Haskell is one of my favorites.
+I also write, play the guitar, and enjoy cooking.</description>
+    </item>
+    
   </channel>
 </rss>
