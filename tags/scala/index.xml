@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>OneBucketSambaar</title>
-    <link>https://www.onebucketsambaar.com/</link>
-    <description>Recent content on OneBucketSambaar</description>
+    <title>scala on OneBucketSambaar</title>
+    <link>https://www.onebucketsambaar.com/tags/scala/</link>
+    <description>Recent content in scala on OneBucketSambaar</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Mon, 20 Jul 2020 12:28:17 -0700</lastBuildDate>
     
-	<atom:link href="https://www.onebucketsambaar.com/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://www.onebucketsambaar.com/tags/scala/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -19,16 +19,6 @@
       <guid>https://www.onebucketsambaar.com/posts/test-the-test/</guid>
       <description>TL;DR - Try not to have logic in unit tests. The whole point of a unit test is to make sure some logic works
  TDD was something new to me about 8 years ago. I worked as a test automation engineer for a large corporation during my internship. My job was to automate integration tests. When I became a full time developer and starting writing production code, I learned about TDD.</description>
-    </item>
-    
-    <item>
-      <title>About Me</title>
-      <link>https://www.onebucketsambaar.com/about/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://www.onebucketsambaar.com/about/</guid>
-      <description>What I do I&amp;rsquo;m a full stack software engineer in the native advertising space with close to a decade of experience writing software. I mostly code in Scala, JavaScript/TypeScript and Java. I have worked in other languages. Haskell is one of my favorites.
-I also write, play the guitar, and enjoy cooking.</description>
     </item>
     
   </channel>

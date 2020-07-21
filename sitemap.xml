@@ -3,6 +3,46 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://www.onebucketsambaar.com/posts/test-the-test/</loc>
+    <lastmod>2020-07-20T12:28:17-07:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.onebucketsambaar.com/</loc>
+    <lastmod>2020-07-20T12:28:17-07:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.onebucketsambaar.com/posts/</loc>
+    <lastmod>2020-07-20T12:28:17-07:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.onebucketsambaar.com/tags/programming/</loc>
+    <lastmod>2020-07-20T12:28:17-07:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.onebucketsambaar.com/tags/scala/</loc>
+    <lastmod>2020-07-20T12:28:17-07:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.onebucketsambaar.com/tags/scalatest/</loc>
+    <lastmod>2020-07-20T12:28:17-07:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.onebucketsambaar.com/tags/</loc>
+    <lastmod>2020-07-20T12:28:17-07:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://www.onebucketsambaar.com/tags/tdd/</loc>
+    <lastmod>2020-07-20T12:28:17-07:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://www.onebucketsambaar.com/about/</loc>
   </url>
   
@@ -11,15 +51,7 @@
   </url>
   
   <url>
-    <loc>https://www.onebucketsambaar.com/</loc>
-  </url>
-  
-  <url>
     <loc>https://www.onebucketsambaar.com/series/</loc>
-  </url>
-  
-  <url>
-    <loc>https://www.onebucketsambaar.com/tags/</loc>
   </url>
   
 </urlset>
