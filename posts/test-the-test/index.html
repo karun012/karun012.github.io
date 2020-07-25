@@ -1,219 +1,29 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta http-equiv=content-language content="en"><meta name=author content="Karun Ramakrishnan"><meta name=description content="TL;DR - Try not to have logic in unit tests. The whole point of a unit test is to make sure some logic works
+ TDD was something new to me about 8 years ago. I worked as a test automation engineer for a large corporation during my internship. My job was to automate integration tests. When I became a full time developer and starting writing production code, I learned about TDD."><meta name=keywords content="blog,developer,personal"><meta name=twitter:card content="summary"><meta name=twitter:title content="Lessons from TDD - Logic in unit tests"><meta name=twitter:description content="TL;DR - Try not to have logic in unit tests. The whole point of a unit test is to make sure some logic works
+ TDD was something new to me about 8 years ago. I worked as a test automation engineer for a large corporation during my internship. My job was to automate integration tests. When I became a full time developer and starting writing production code, I learned about TDD."><meta property="og:title" content="Lessons from TDD - Logic in unit tests"><meta property="og:description" content="TL;DR - Try not to have logic in unit tests. The whole point of a unit test is to make sure some logic works
+ TDD was something new to me about 8 years ago. I worked as a test automation engineer for a large corporation during my internship. My job was to automate integration tests. When I became a full time developer and starting writing production code, I learned about TDD."><meta property="og:type" content="article"><meta property="og:url" content="https://www.onebucketsambaar.com/posts/test-the-test/"><meta property="article:published_time" content="2020-07-20T12:28:17-07:00"><meta property="article:modified_time" content="2020-07-20T12:28:17-07:00"><base href=https://www.onebucketsambaar.com/posts/test-the-test/><title>Lessons from TDD - Logic in unit tests · OneBucketSambaar</title><link rel=canonical href=https://www.onebucketsambaar.com/posts/test-the-test/><link href="https://fonts.googleapis.com/css?family=Lato:400,700%7CMerriweather:300,700%7CSource+Code+Pro:400,700&display=swap" rel=stylesheet><link rel=stylesheet href=https://use.fontawesome.com/releases/v5.13.0/css/all.css integrity=sha384-Bfad6CLCknfcloXFOyFnlgtENryhrpZCe29RTifKEixXQZ38WheV+i/6YWSzkz3V crossorigin=anonymous><link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css integrity="sha256-l85OmPOjvil/SOvVt3HnSSjzF1TUMyT9eV0c2BzEGzU=" crossorigin=anonymous><link rel=stylesheet href=https://www.onebucketsambaar.com/css/coder.min.a4f332213a21ce8eb521670c614470c58923aaaf385e2a73982c31dd7642decb.css integrity="sha256-pPMyITohzo61IWcMYURwxYkjqq84XipzmCwx3XZC3ss=" crossorigin=anonymous media=screen><link rel=icon type=image/png href=https://www.onebucketsambaar.com/img/favicon-32x32.png sizes=32x32><link rel=icon type=image/png href=https://www.onebucketsambaar.com/img/favicon-16x16.png sizes=16x16><meta name=generator content="Hugo 0.71.1"></head><body class=colorscheme-light><main class=wrapper><nav class=navigation><section class=container><a class=navigation-title href=https://www.onebucketsambaar.com/>OneBucketSambaar</a>
+<input type=checkbox id=menu-toggle>
+<label class="menu-button float-right" for=menu-toggle><i class="fas fa-bars"></i></label><ul class=navigation-list><li class=navigation-item><a class=navigation-link href=https://www.onebucketsambaar.com/posts/>Blog</a></li><li class=navigation-item><a class=navigation-link href=https://www.onebucketsambaar.com/about/>About</a></li></ul></section></nav><div class=content><section class="container post"><article><header><div class=post-title><h1 class=title>Lessons from TDD - Logic in unit tests</h1></div><div class=post-meta><div class=date><span class=posted-on><i class="fas fa-calendar"></i><time datetime=2020-07-20T12:28:17-07:00>July 20, 2020</time></span>
+<span class=reading-time><i class="fas fa-clock"></i>3-minute read</span></div><div class=tags><i class="fas fa-tag"></i><a href=https://www.onebucketsambaar.com/tags/programming/>programming</a>
+<span class=separator>•</span>
+<a href=https://www.onebucketsambaar.com/tags/tdd/>TDD</a>
+<span class=separator>•</span>
+<a href=https://www.onebucketsambaar.com/tags/scala/>scala</a>
+<span class=separator>•</span>
+<a href=https://www.onebucketsambaar.com/tags/scalatest/>scalatest</a></div></div></header><div><blockquote><p><strong>TL;DR</strong> - Try not to have logic in unit tests. The whole point of a unit test is to make sure some logic works</p></blockquote><p>TDD was something new to me about 8 years ago. I worked as a test automation engineer for a large corporation during my internship. My job was to automate integration tests. When I became a full time developer and starting writing production code, I learned about TDD. I realized that it&rsquo;s one of the best tools that I had ever come across. Since then my mantra has been red-green-refactor. I have met newer engineers who ask the question - why test it if it works?</p><p>If you work in a large codebase, you&rsquo;ll realize that refactoring an existing system is relatively crazier if it has a lack of test coverage. Especially when the code is business critical. Having a well tested system gives you way more confidence in refactoring since you know that if you mess something up, there will most likely be a test case that fails. Now, I&rsquo;m not saying that if all tests pass, the system functions as expected. That&rsquo;s not guaranteed unless all tests were written correctly. I&rsquo;ve seen tests that are wrong which result in wrong code. With enough test coverage, at least I don&rsquo;t have to take the car out for a spin every time I tighten a screw.</p><p>One of the biggest flaws I have seen in testing is the use of logic in tests. The purpose of a test is to make sure a certain piece of code works the way it is supposed to. The moment you add some logic in the test, the test starts to become complex. Here are two fun things I&rsquo;ve learned -</p><h3 id=loops-around-tests>Loops around tests</h3><p>I have come across test suites where a bunch of test methods are wrapped in a loop. Think of tests for a generic DAO that works with multiple tables. If you want to make sure it works with all the tables, do not wrap all the tests in loop and execute them against the tables.</p><div class=highlight><pre style=-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-scala data-lang=scala><span style=color:green;font-weight:700>class</span> <span style=color:#00f;font-weight:700>FooDao</span><span style=color:#666>(</span><span style=color:green;font-weight:700>val</span> table<span style=color:green;font-weight:700>:</span> <span style=color:#b00040>String</span><span style=color:#666>)</span> <span style=color:#666>{</span>
+    <span style=color:green;font-weight:700>def</span> writeStuff<span style=color:#666>(</span>stuff<span style=color:green;font-weight:700>:</span> <span style=color:#b00040>Stuff</span><span style=color:#666>)</span><span style=color:green;font-weight:700>:</span> <span style=color:#b00040>Unit</span>
+    <span style=color:green;font-weight:700>def</span> readStuff<span style=color:#666>()</span><span style=color:green;font-weight:700>:</span> <span style=color:#b00040>Seq</span><span style=color:#666>[</span><span style=color:#b00040>Stuff</span><span style=color:#666>]</span>
+<span style=color:#666>}</span>
 
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Language" content="en">
-
-    <meta name="author" content="Karun Ramakrishnan">
-    <meta name="description" content="TL;DR - Try not to have logic in unit tests. The whole point of a unit test is to make sure some logic works
- TDD was something new to me about 8 years ago. I worked as a test automation engineer for a large corporation during my internship. My job was to automate integration tests. When I became a full time developer and starting writing production code, I learned about TDD.">
-    <meta name="keywords" content="blog,developer,personal">
-
-    <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Lessons from TDD - Logic in unit tests"/>
-<meta name="twitter:description" content="TL;DR - Try not to have logic in unit tests. The whole point of a unit test is to make sure some logic works
- TDD was something new to me about 8 years ago. I worked as a test automation engineer for a large corporation during my internship. My job was to automate integration tests. When I became a full time developer and starting writing production code, I learned about TDD."/>
-
-    <meta property="og:title" content="Lessons from TDD - Logic in unit tests" />
-<meta property="og:description" content="TL;DR - Try not to have logic in unit tests. The whole point of a unit test is to make sure some logic works
- TDD was something new to me about 8 years ago. I worked as a test automation engineer for a large corporation during my internship. My job was to automate integration tests. When I became a full time developer and starting writing production code, I learned about TDD." />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="https://www.onebucketsambaar.com/posts/test-the-test/" />
-<meta property="article:published_time" content="2020-07-20T12:28:17-07:00" />
-<meta property="article:modified_time" content="2020-07-20T12:28:17-07:00" />
-
-
-    
-      <base href="https://www.onebucketsambaar.com/posts/test-the-test/">
-    
-    <title>
-  Lessons from TDD - Logic in unit tests · OneBucketSambaar
-</title>
-
-    
-      <link rel="canonical" href="https://www.onebucketsambaar.com/posts/test-the-test/">
-    
-
-    <link href="https://fonts.googleapis.com/css?family=Lato:400,700%7CMerriweather:300,700%7CSource+Code+Pro:400,700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.13.0/css/all.css" integrity="sha384-Bfad6CLCknfcloXFOyFnlgtENryhrpZCe29RTifKEixXQZ38WheV+i/6YWSzkz3V" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" integrity="sha256-l85OmPOjvil/SOvVt3HnSSjzF1TUMyT9eV0c2BzEGzU=" crossorigin="anonymous" />
-
-    
-      
-      
-      <link rel="stylesheet" href="https://www.onebucketsambaar.com/css/coder.min.a4f332213a21ce8eb521670c614470c58923aaaf385e2a73982c31dd7642decb.css" integrity="sha256-pPMyITohzo61IWcMYURwxYkjqq84XipzmCwx3XZC3ss=" crossorigin="anonymous" media="screen" />
-    
-
-    
-
-    
-
-    
-
-    
-
-    <link rel="icon" type="image/png" href="https://www.onebucketsambaar.com/img/favicon-32x32.png" sizes="32x32">
-    <link rel="icon" type="image/png" href="https://www.onebucketsambaar.com/img/favicon-16x16.png" sizes="16x16">
-
-    <meta name="generator" content="Hugo 0.71.1" />
-  </head>
-
-  
-  
-  <body class="colorscheme-light">
-    <main class="wrapper">
-      <nav class="navigation">
-  <section class="container">
-    <a class="navigation-title" href="https://www.onebucketsambaar.com/">
-      OneBucketSambaar
-    </a>
-    
-    <input type="checkbox" id="menu-toggle" />
-    <label class="menu-button float-right" for="menu-toggle"><i class="fas fa-bars"></i></label>
-    <ul class="navigation-list">
-      
-        
-          <li class="navigation-item">
-            <a class="navigation-link" href="https://www.onebucketsambaar.com/posts/">Blog</a>
-          </li>
-        
-          <li class="navigation-item">
-            <a class="navigation-link" href="https://www.onebucketsambaar.com/about/">About</a>
-          </li>
-        
-      
-      
-    </ul>
-    
-  </section>
-</nav>
-
-
-      <div class="content">
-        
-  <section class="container post">
-    <article>
-      <header>
-        <div class="post-title">
-          <h1 class="title">Lessons from TDD - Logic in unit tests</h1>
-        </div>
-        <div class="post-meta">
-          <div class="date">
-            <span class="posted-on">
-              <i class="fas fa-calendar"></i>
-              <time datetime='2020-07-20T12:28:17-07:00'>
-                July 20, 2020
-              </time>
-            </span>
-            <span class="reading-time">
-              <i class="fas fa-clock"></i>
-              3-minute read
-            </span>
-          </div>
-          
-          <div class="tags">
-  <i class="fas fa-tag"></i>
-    <a href="https://www.onebucketsambaar.com/tags/programming/">programming</a>
-      <span class="separator">•</span>
-    <a href="https://www.onebucketsambaar.com/tags/tdd/">TDD</a>
-      <span class="separator">•</span>
-    <a href="https://www.onebucketsambaar.com/tags/scala/">scala</a>
-      <span class="separator">•</span>
-    <a href="https://www.onebucketsambaar.com/tags/scalatest/">scalatest</a></div>
-
-        </div>
-      </header>
-
-      <div>
-        
-        <blockquote>
-<p><strong>TL;DR</strong> - Try not to have logic in unit tests. The whole point of a unit test is to make sure some logic works</p>
-</blockquote>
-<p>TDD was something new to me about 8 years ago. I worked as a test automation engineer for a large corporation during my internship. My job was to automate integration tests. When I became a full time developer and starting writing production code, I learned about TDD. I realized that it&rsquo;s one of the best tools that I had ever come across. Since then my mantra has been red-green-refactor. I have met newer engineers who ask the question - why test it if it works?</p>
-<p>If you work in a large codebase, you&rsquo;ll realize that refactoring an existing system is relatively crazier if it has a lack of test coverage. Especially when the code is business critical. Having a well tested system gives you way more confidence in refactoring since you know that if you mess something up, there will most likely be a test case that fails. Now, I&rsquo;m not saying that if all tests pass, the system functions as expected. That&rsquo;s not guaranteed unless all tests were written correctly. I&rsquo;ve seen tests that are wrong which result in wrong code. With enough test coverage, at least I don&rsquo;t have to take the car out for a spin every time I tighten a screw.</p>
-<p>One of the biggest flaws I have seen in testing is the use of logic in tests. The purpose of a test is to make sure a certain piece of code works the way it is supposed to. The moment you add some logic in the test, the test starts to become complex. Here are two fun things I&rsquo;ve learned -</p>
-<h3 id="loops-around-tests">Loops around tests</h3>
-<p>I have come across test suites where a bunch of test methods are wrapped in a loop. Think of tests for a generic DAO that works with multiple tables. If you want to make sure it works with all the tables, do not wrap all the tests in loop and execute them against the tables.</p>
-<div class="highlight"><pre style=";-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-scala" data-lang="scala"><span style="color:#008000;font-weight:bold">class</span> <span style="color:#00f;font-weight:bold">FooDao</span><span style="color:#666">(</span><span style="color:#008000;font-weight:bold">val</span> table<span style="color:#008000;font-weight:bold">:</span> <span style="color:#b00040">String</span><span style="color:#666">)</span> <span style="color:#666">{</span>
-    <span style="color:#008000;font-weight:bold">def</span> writeStuff<span style="color:#666">(</span>stuff<span style="color:#008000;font-weight:bold">:</span> <span style="color:#b00040">Stuff</span><span style="color:#666">)</span><span style="color:#008000;font-weight:bold">:</span> <span style="color:#b00040">Unit</span>
-    <span style="color:#008000;font-weight:bold">def</span> readStuff<span style="color:#666">()</span><span style="color:#008000;font-weight:bold">:</span> <span style="color:#b00040">Seq</span><span style="color:#666">[</span><span style="color:#b00040">Stuff</span><span style="color:#666">]</span>
-<span style="color:#666">}</span>
-
-<span style="color:#008000;font-weight:bold">class</span> <span style="color:#00f;font-weight:bold">FooTest</span> <span style="color:#008000;font-weight:bold">extends</span> <span style="color:#00f;font-weight:bold">FunSuite</span> <span style="color:#008000;font-weight:bold">with</span> <span style="color:#00f;font-weight:bold">Matchers</span> <span style="color:#666">{</span>
-    <span style="color:#00f;font-weight:bold">Seq</span><span style="color:#666">(</span><span style="color:#ba2121">&#34;tableA&#34;</span><span style="color:#666">,</span> <span style="color:#ba2121">&#34;tableB&#34;</span><span style="color:#666">,</span> <span style="color:#ba2121">&#34;tableC&#34;</span><span style="color:#666">).</span>forEach <span style="color:#666">{</span> table <span style="color:#008000;font-weight:bold">=&gt;</span>
-        <span style="color:#008000;font-weight:bold">val</span> dao <span style="color:#008000;font-weight:bold">=</span> <span style="color:#008000;font-weight:bold">new</span> <span style="color:#00f;font-weight:bold">FooDao</span><span style="color:#666">(</span>table<span style="color:#666">)</span>
-        <span style="color:#408080;font-style:italic">//test write
-</span><span style="color:#408080;font-style:italic"></span>        <span style="color:#408080;font-style:italic">//test read
-</span><span style="color:#408080;font-style:italic"></span>    <span style="color:#666">}</span>
-<span style="color:#666">}</span>
-</code></pre></div><p>At least in Intellij if you run one of the tests independently, it&rsquo;ll tell youthat the test passed. But try putting a failing assertion in it and you&rsquo;ll notice that the test does not actually run. The correct way to write this test is to use shared behavior - <a href="https://www.scalatest.org/user_guide/sharing_tests">https://www.scalatest.org/user_guide/sharing_tests</a>.</p>
-<h3 id="conditions-in-test-code">Conditions in test code</h3>
-<p>It is harder to follow test code that has conditional logic. Conditionals imply that you need to have multiple tests/suites instead. If your test has conditions, is there test code that tests you test?</p>
-<p>Take the case of beta features. If you have certain tests that need to work when a beta feature is turned on, and all other tests need to work in both cases, it&rsquo;s always best to duplicate the tests and have one test that covers all the cases plus the ones specific for the beta feature, and another that does not have the tests for the beta feature but specifically turns it off for testing. That way when your beta feature code is cleaned up, you just have to delete the old test and not worry about whether or not you deleted too much.</p>
-<p>There are many more little things you can do to avoid having logic in tests. These are the two most important ones that I have come across a lot.</p>
-
-      </div>
-
-
-      <footer>
-        
-
-
-        
-        
-        
-      </footer>
-    </article>
-
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-  <script type="text/javascript" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js" id="MathJax-script"></script>
-  <script>
-    MathJax = {
-      tex: {
-        inlineMath: [
-          ['$', '$'], ['\\(', '\\)']
-        ],
-        processEscapes: true,
-        processEnvironments: true
-      },
-      options: {
-        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
-      }
-    };
-  </script>
-  </section>
-
-      </div>
-
-      
-  <footer class="footer">
-    <section class="container">
-      
-      
-        ©
-        
-        2020
-         Karun Ramakrishnan 
-      
-      
-         · 
-        Powered by <a href="https://gohugo.io/">Hugo</a> & <a href="https://github.com/luizdepra/hugo-coder/">Coder</a>.
-      
-      
-    </section>
-  </footer>
-
-    </main>
-
-    
-
-    
-
-    
-
-  </body>
-
-</html>
+<span style=color:green;font-weight:700>class</span> <span style=color:#00f;font-weight:700>FooTest</span> <span style=color:green;font-weight:700>extends</span> <span style=color:#00f;font-weight:700>FunSuite</span> <span style=color:green;font-weight:700>with</span> <span style=color:#00f;font-weight:700>Matchers</span> <span style=color:#666>{</span>
+    <span style=color:#00f;font-weight:700>Seq</span><span style=color:#666>(</span><span style=color:#ba2121>&#34;tableA&#34;</span><span style=color:#666>,</span> <span style=color:#ba2121>&#34;tableB&#34;</span><span style=color:#666>,</span> <span style=color:#ba2121>&#34;tableC&#34;</span><span style=color:#666>).</span>forEach <span style=color:#666>{</span> table <span style=color:green;font-weight:700>=&gt;</span>
+        <span style=color:green;font-weight:700>val</span> dao <span style=color:green;font-weight:700>=</span> <span style=color:green;font-weight:700>new</span> <span style=color:#00f;font-weight:700>FooDao</span><span style=color:#666>(</span>table<span style=color:#666>)</span>
+        <span style=color:#408080;font-style:italic>//test write
+</span><span style=color:#408080;font-style:italic></span>        <span style=color:#408080;font-style:italic>//test read
+</span><span style=color:#408080;font-style:italic></span>    <span style=color:#666>}</span>
+<span style=color:#666>}</span>
+</code></pre></div><p>At least in Intellij if you run one of the tests independently, it&rsquo;ll tell youthat the test passed. But try putting a failing assertion in it and you&rsquo;ll notice that the test does not actually run. The correct way to write this test is to use shared behavior - <a href=https://www.scalatest.org/user_guide/sharing_tests>https://www.scalatest.org/user_guide/sharing_tests</a>.</p><h3 id=conditions-in-test-code>Conditions in test code</h3><p>It is harder to follow test code that has conditional logic. Conditionals imply that you need to have multiple tests/suites instead. If your test has conditions, is there test code that tests you test?</p><p>Take the case of beta features. If you have certain tests that need to work when a beta feature is turned on, and all other tests need to work in both cases, it&rsquo;s always best to duplicate the tests and have one test that covers all the cases plus the ones specific for the beta feature, and another that does not have the tests for the beta feature but specifically turns it off for testing. That way when your beta feature code is cleaned up, you just have to delete the old test and not worry about whether or not you deleted too much.</p><p>There are many more little things you can do to avoid having logic in tests. These are the two most important ones that I have come across a lot.</p></div><footer></footer></article><script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script><script type=text/javascript async src=https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js></script><script src=https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js id=MathJax-script></script><script>MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],processEscapes:true,processEnvironments:true},options:{skipHtmlTags:['script','noscript','style','textarea','pre']}};</script></section></div><footer class=footer><section class=container>©
+2020
+Karun Ramakrishnan
+·
+Powered by <a href=https://gohugo.io/>Hugo</a> & <a href=https://github.com/luizdepra/hugo-coder/>Coder</a>.</section></footer></main></body></html>
