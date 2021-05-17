@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>software on Karun Ramakrishnan</title><link>https://www.karun.dev/tags/software/</link><description>Recent content in software on Karun Ramakrishnan</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Sun, 16 May 2021 10:00:00 -0700</lastBuildDate><atom:link href="https://www.karun.dev/tags/software/index.xml" rel="self" type="application/rss+xml"/><item><title>Install raspotify on Ubuntu server 20.04 (64 bit)/64 bit Armhf</title><link>https://www.karun.dev/posts/raspotify-64-bit-armhf/</link><pubDate>Sun, 16 May 2021 10:00:00 -0700</pubDate><guid>https://www.karun.dev/posts/raspotify-64-bit-armhf/</guid><description>Note: Use this at your own risk! This worked for me on Ubuntu 20.04
+Until it is supported on 64 bit distros
+Add armhf sudo dpkg --add-architecture armhf
+sudo apt update
+wget https://dtcooper.github.io/raspotify/raspotify-latest.deb
+sudo dpkg -i raspotify-latest.deb
+If it fails, install missing dependencies. Usually libasound2.
+sudo apt install libasound2
+If that breaks then apt --fix-broken install
+Once more sudo dpkg -i raspotify-latest.deb</description></item></channel></rss>
