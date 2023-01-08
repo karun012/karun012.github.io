@@ -12,7 +12,7 @@ In the nine odd years of software engineering that I have done, I have learned t
     <span style=color:#408080;font-style:italic>//Do things the old way
 </span><span style=color:#408080;font-style:italic></span><span style=color:#666>}</span>
 </code></pre></div><p>It is incredibly simple to do. All you need is a common database that all your services have access to, a little table of feature toggles - name and boolean columns, a stupid map that is thread safe to hold your features in memory and a thread that refreshes that map (of course you can just use whatever cache you are already using. I&rsquo;m just keeping everything simple and under my control). You can throw a UI in front of all this to turn things off and on. Toggles accumulate over time and you just clean them up once you&rsquo;ve turned them on in production and you&rsquo;re happy with it.</p><p>Later on in life you can go fancy and build more complex feature toggling capabilities.</p><p>Save yourself from sleepless nights and use feature toggles.</p></div><footer></footer></article><script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script><script type=text/javascript async src=https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js></script><script src=https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js id=MathJax-script></script><script>MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],processEscapes:true,processEnvironments:true},options:{skipHtmlTags:['script','noscript','style','textarea','pre']}};</script></section></div><footer class=footer><section class=container>©
-2022
+2023
 Karun Ramakrishnan
 ·
 Powered by <a href=https://gohugo.io/>Hugo</a> & <a href=https://github.com/luizdepra/hugo-coder/>Coder</a>.</section></footer></main></body></html>
